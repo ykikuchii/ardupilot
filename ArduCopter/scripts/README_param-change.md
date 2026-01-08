@@ -72,11 +72,10 @@ cp ArduCopter/scripts/param-change.lua scripts/
 ArduCopterのSITLを起動します：
 
 ```bash
-cd ArduCopter
-./waf configure --board sitl
-./waf copter
-./Tools/autotest/sim_vehicle.py -v ArduCopter -f quad
+sim_vehicle.py --out=udp:IPアドレス:14550 --console --map
 ```
+
+**注意**: `IPアドレス`は、Mission PlannerなどのGCSを接続する際に使用するIPアドレスに置き換えてください（例: `127.0.0.1`）。
 
 ### S3. パラメータの設定（SITL）
 
@@ -86,6 +85,8 @@ SITL起動後、MAVProxyまたはGCSから以下のパラメータを設定：
 param set SCR_ENABLE 1
 param set SCR_HEAP_SIZE 100000
 ```
+
+**重要**: `param set SCR_ENABLE 1`を設定した後は、**SITLを一度停止して再起動**させる必要があります。パラメータを反映させるために、SITLを再起動してください。
 
 ### S4. RCチャンネルのシミュレーション
 

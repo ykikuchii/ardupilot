@@ -21,7 +21,17 @@ end
 local param_cache = {}
 local function get_param_obj(name)
   if param_cache[name] == nil then
-    param_cache[name] = Parameter(name)
+    local p = Parameter()
+    if not p:init(name) then
+      -- Parameter doesn't exist, cache nil to avoid repeated attempts
+      param_cache[name] = false
+      return nil
+    end
+    param_cache[name] = p
+  end
+  -- Return nil if parameter doesn't exist (cached as false)
+  if param_cache[name] == false then
+    return nil
   end
   return param_cache[name]
 end
@@ -37,6 +47,11 @@ local function setp(n,v)
   
   -- Set using both Parameter object and param:set() for reliability
   local p = get_param_obj(n)
+  if p == nil then
+    -- Parameter doesn't exist, skip Parameter:set() but try param:set()
+    return param:set(n, v)
+  end
+  
   local ok1 = p:set(v)
   local ok2 = param:set(n, v)
   
